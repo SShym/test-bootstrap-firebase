@@ -377,7 +377,7 @@ export const verifyCode = (verificationId, values, setErrorMessage, authMode, na
         const userDoc = doc(usersRef, userCredential.user.uid);
 
         if(authMode === 'register' && querySnapshot.empty) {
-          await setDoc(collection(userDoc, "users"), {
+          await setDoc(userDoc, {
             phone: values.phone,
             name: values.name,
             role: values.role,
