@@ -8,7 +8,8 @@ import {
   getDocs,
   doc,
   where,
-  query
+  query,
+  updateDoc
 } from "firebase/firestore";
 
 import { googleProvider } from "../firebase/config";
@@ -266,14 +267,20 @@ export const getUsers = () => async (dispatch) => {
 
 export const changeUserSettings = (values, user) => async (dispatch) => {
   const db = getFirestore();
-
+  console.log(user)
+  const dataToUpdate = {
+    name: values.name,
+    role: values.role
+  }
   try {
     const userRef = doc(db, "users", user.id);
 
-    await setDoc(userRef, values, { merge: true }).then(() => {
+    await updateDoc(userRef, dataToUpdate).then(() => {
       dispatch(getUsers());
     });
   } catch (error) {
+    console.log(error)
+
     dispatch(errorOn(error.response.status));
   }
 }
@@ -332,24 +339,22 @@ export const sendVerificationCode = (phoneNumber, setVerificationId, setErrorMes
     const phoneRef = collection(db, "users");
     const phoneField = query(phoneRef, where("phone", "==", phoneNumber));
     const querySnapshot = await getDocs(phoneField);
-
-    if(!querySnapshot.empty){
+    
+    if(!querySnapshot.empty && authMode === 'register'){
       toast.error('User exists');
+    } else if(authMode === 'login' && querySnapshot.empty){
+      toast.error('User not found');
     } else {
-      if((authMode === 'login' && !querySnapshot.empty) || authMode === 'register'){
-        const verifier = new RecaptchaVerifier('recaptcha', {
-          callback: () => {},
-          onError: (err) => console.error(err)
-        }, auth);
-  
-        const confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, verifier);
-  
-        setVerificationId(confirmationResult.verificationId);
+      const verifier = new RecaptchaVerifier('recaptcha', {
+        callback: () => {},
+        onError: (error) => console.error('error', error)
+      }, auth);
+      console.log(phoneNumber)
+      const confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, verifier);
 
-        toast.success('SMS sent successfully');
-      } else {
-        toast.error('User not found');
-      }
+      setVerificationId(confirmationResult.verificationId);
+
+      toast.success('SMS sent successfully');
     }
   } catch (error){
     console.log('d', error)
@@ -357,32 +362,42 @@ export const sendVerificationCode = (phoneNumber, setVerificationId, setErrorMes
   }
 }
 
-export const verifyCode = (verificationId, values, setErrorMessage, authMode) => async (dispatch) => {
+export const verifyCode = (verificationId, values, setErrorMessage, authMode, navigate) => async (dispatch) => {
   const auth = getAuth();
   const db = getFirestore();
 
   try {
-    const phoneRef = collection(db, "users");
-    const phoneField = query(phoneRef, where("phone", "==", values.phone));
+    const usersRef = collection(db, "users");
+    const phoneField = query(usersRef, where("phone", "==", values.phone));
     const querySnapshot = await getDocs(phoneField);
+    const credential = PhoneAuthProvider.credential(verificationId, values.verificationCode);
 
-    console.log(verificationId, values.verificationCode);
+    await signInWithCredential(auth, credential)
+      .then(async (userCredential) => {
+        const userDoc = doc(usersRef, userCredential.user.uid);
 
-    const credential = await PhoneAuthProvider.credential(verificationId, values.verificationCode);
+        if(authMode === 'register' && querySnapshot.empty) {
+          await setDoc(collection(userDoc, "users"), {
+            phone: values.phone,
+            name: values.name,
+            role: values.role,
+            isAdmin: false,
+            id: userCredential.user.uid
+          })
+        }
+        dispatch({
+          type: AUTH,
+          data: {
+            name: values.name,
+            role: values.role,
+            isAdmin: false,
+            phone: values.phone,
+            id: userCredential.user.uid,
+          },
+        }); 
 
-    await signInWithCredential(auth, credential).catch(e => console.log(e));
-
-    console.log(credential)
-
-    if(authMode === 'register' && querySnapshot.empty) {
-      await addDoc(collection(db, "users"), {
-        phone: values.phone,
-        name: values.name,
-        role: values.role,
-        // id: user.uid
-      })
-      console.log('added')
-    }
+        navigate('/');
+      }).catch(err => console.log('err', err));
   } catch (error) {
     setErrorMessage(error.code)
   }

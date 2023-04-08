@@ -5,6 +5,7 @@ import * as Yup from 'yup';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { toast } from 'react-hot-toast';
 import { Toaster } from 'react-hot-toast';
+import { useNavigate } from "react-router-dom";
 
 const RegisterWithPhone = () => {
   const [authMode, setAuthMode] = useState('login');
@@ -29,13 +30,14 @@ const RegisterWithPhone = () => {
   });
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleSendVerificationCode = (phoneNumber) => {
     dispatch(sendVerificationCode(phoneNumber, setVerificationId, setErrorMessage, toast, authMode));
   };
 
   const handleVerifyCode = (values) => {
-    dispatch(verifyCode(verificationId, values, setErrorMessage, authMode));
+    dispatch(verifyCode(verificationId, values, setErrorMessage, authMode, navigate));
   };
   
   return (
@@ -43,9 +45,9 @@ const RegisterWithPhone = () => {
       <h2 className=" text-center mb-4">{authMode === 'login' ? 'Login' : 'Register'} with phone</h2>
         <Formik
           initialValues={{ 
+            name: '', 
             phone: '',
             verificationCode: '',
-            name: '', 
             role: 'passenger',
           }}
           validationSchema={authMode === 'login' ? loginSchema : registerSchema}

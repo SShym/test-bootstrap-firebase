@@ -17,7 +17,7 @@ const CreateTrip = () => {
         from: '',
         to: '',
         passengers: 0,
-        creator: user?.email
+        creator: user?.id
     };
 
     const validationSchema = Yup.object({
@@ -119,7 +119,7 @@ const CreateTrip = () => {
                             <div className='border border-primary p-3 m-2'>
                                 From: {trip.from}. To: {trip.to}. Passangers: {trip.passengers}
                             </div>
-                            {user?.email === trip.creator &&
+                            {user?.id === trip.creator &&
                                 <button onClick={() => handleDeleteTrip(trip.id)} className='btn btn-danger h-25'>delete</button>
                             }
                         </div>

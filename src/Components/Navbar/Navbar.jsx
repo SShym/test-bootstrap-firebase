@@ -23,7 +23,7 @@ const Navbar = () => {
                 <span className="navbar-toggler-icon"></span>
             </button>
             <div className="navbar-brand d-inline-block">
-                <span className='d-none d-sm-inline-flex mr-3 my-class text-muted small'>{user?.email}</span>
+                <span className='d-none d-sm-inline-flex mr-3 my-class text-muted small'>{user?.name}</span>
                 <img src={deffaultPhoto} style={{width:'35px', height:'35px'}} alt="Avatar" />
                 <button onClick={handleLogout} className='btn btn-primary ml-4 pl-4 pr-4'>logout</button>
             </div>
