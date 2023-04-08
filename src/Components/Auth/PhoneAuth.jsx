@@ -67,12 +67,14 @@ const RegisterWithPhone = () => {
                       placeholder='Phone' 
                     />
                     <div class="input-group-append">
-                      <button
-                        class="btn btn-info" 
-                        type="submit" 
-                        id="send-code-btn"
-                      >Send SMS
-                      </button>
+                      {!verificationId &&
+                        <button
+                          class="btn btn-info" 
+                          type="submit" 
+                          id="send-code-btn"
+                          >Send SMS
+                        </button>
+                      }
                     </div>
                   </div>
                   <ErrorMessage name='phone' className='text-danger' component='div' />
@@ -97,15 +99,16 @@ const RegisterWithPhone = () => {
                       <option value="dispatcher">Dispatcher</option>
                     </Field>
                   </div>
-                  <button 
-                    className="w-100 mt-4 btn btn-info" 
-                    type="submit" 
-                    id="send-code-btn"
-                  >Send SMS
-                  </button>
+                  {!verificationId &&
+                    <button 
+                      className="w-100 mt-4 btn btn-info" 
+                      type="submit" 
+                      id="send-code-btn"
+                    >Send SMS
+                    </button>
+                  }
                 </div>
               )}
-
               {verificationId && (
               <div>
                 {verificationId && (
@@ -119,14 +122,12 @@ const RegisterWithPhone = () => {
                       aria-describedby="send-code-btn"
                     />
                     <div className="input-group-append">
-                      <button
+                      <div
                         onClick={() => handleVerifyCode(values)}
                         className="btn btn-outline-info"
-                        type="submit"
-                        id="verify-code-btn"
                       >
                         Confirm code
-                      </button>
+                      </div>
                     </div>
                   </div>
                 )}

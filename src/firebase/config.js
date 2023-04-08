@@ -20,4 +20,4 @@ const ownerMail = 'serh.shym@gmail.com';
 const googleProvider = new GoogleAuthProvider();
 const facebookProvider = new FacebookAuthProvider();
 
-export { auth, googleProvider, facebookProvider, db, ownerMail };
+export { auth, googleProvider, facebookProvider, db, ownerMail, app };

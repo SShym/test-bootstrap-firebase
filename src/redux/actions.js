@@ -327,21 +327,18 @@ export const sendVerificationCode = (phoneNumber, setVerificationId, setErrorMes
     const phoneRef = collection(db, "users");
     const phoneField = query(phoneRef, where("phone", "==", phoneNumber));
     const querySnapshot = await getDocs(phoneField);
-    
+
     if(!querySnapshot.empty && authMode === 'register'){
       toast.error('User exists');
     } else if(authMode === 'login' && querySnapshot.empty){
       toast.error('User not found');
     } else {
-      const verifier = new RecaptchaVerifier('recaptcha', {
-        callback: () => {},
-        onError: (error) => console.error('error', error)
-      }, auth);
-      const confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, verifier);
+      const verifier = new RecaptchaVerifier('recaptcha', {}, auth);
 
-      setVerificationId(confirmationResult.verificationId);
-
-      toast.success('SMS sent successfully');
+      await signInWithPhoneNumber(auth, phoneNumber, verifier).then(res => {
+        setVerificationId(res.verificationId);
+        toast.success('SMS sent successfully');
+      }).catch(err => setErrorMessage(err.code))
     }
   } catch (error){
     setErrorMessage(error.code)
@@ -356,11 +353,14 @@ export const verifyCode = (verificationId, values, setErrorMessage, authMode, na
     const usersRef = collection(db, "users");
     const phoneField = query(usersRef, where("phone", "==", values.phone));
     const querySnapshot = await getDocs(phoneField);
+
     const credential = PhoneAuthProvider.credential(verificationId, values.verificationCode);
 
     await signInWithCredential(auth, credential)
       .then(async (userCredential) => {
         const userDoc = doc(usersRef, userCredential.user.uid);
+        const docSnapshot = await getDoc(userDoc);
+        const userData = docSnapshot.data();
 
         if(authMode === 'register' && querySnapshot.empty) {
           await setDoc(userDoc, {
@@ -374,16 +374,16 @@ export const verifyCode = (verificationId, values, setErrorMessage, authMode, na
         dispatch({
           type: AUTH,
           data: {
-            name: values.name,
-            role: values.role,
-            isAdmin: false,
-            phone: values.phone,
-            id: userCredential.user.uid,
+            name: userData.name,
+            role: userData.role,
+            isAdmin: userData.isAdmin,
+            phone: userData.phone,
+            id: userData.id,
           },
         }); 
 
         navigate('/');
-      }).catch(err => console.log('err', err));
+      });
   } catch (error) {
     setErrorMessage(error.code)
   }
