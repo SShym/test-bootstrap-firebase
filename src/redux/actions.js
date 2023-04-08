@@ -9,10 +9,10 @@ import {
   doc,
   where,
   query,
-  updateDoc
+  updateDoc,
 } from "firebase/firestore";
 
-import { googleProvider } from "../firebase/config";
+import { googleProvider, ownerMail } from "../firebase/config";
 
 import {
   createUserWithEmailAndPassword,
@@ -26,9 +26,7 @@ import {
   RecaptchaVerifier, 
   signInWithPhoneNumber, 
   PhoneAuthProvider, 
-  signInWithCredential,
-  updateProfile,
-  getUserByPhoneNumber  
+  signInWithCredential,  
 } from "firebase/auth";
 
 export const ERROR_DISPLAY_ON = 'ERROR_DISPLAY_ON';
@@ -106,7 +104,7 @@ export const signInViaSocialNetwork = (provider, navigate, toast) => async (disp
     if(!userExists){
       await setDoc(userDocRef, {
         name: result.user.displayName,
-        isAdmin: auth.currentUser.email === 'serh.shym@gmail.com' ? true : false,
+        isAdmin: auth.currentUser.email === ownerMail ? true : false,
         role: 'passenger',
         email: result.user.email,
         id: result.user.uid,
@@ -115,7 +113,7 @@ export const signInViaSocialNetwork = (provider, navigate, toast) => async (disp
           type: AUTH,
           data: {
             name: result.user.displayName,
-            isAdmin: auth.currentUser.email === 'serh.shym@gmail.com' ? true : false,
+            isAdmin: auth.currentUser.email === ownerMail ? true : false,
             role: 'passenger',
             email: result.user.email,
             id: result.user.uid,
@@ -209,7 +207,7 @@ export const register = (values, toast, setSubmitting, resetForm, navigate) => a
         setDoc(userDoc, {
           name: values.name,
           role: values.role,
-          isAdmin: auth.currentUser.email === 'serh.shym@gmail.com' ? true : false,
+          isAdmin: auth.currentUser.email === ownerMail ? true : false,
           email: values.email,
           id: auth.currentUser.uid,
         });
@@ -220,7 +218,7 @@ export const register = (values, toast, setSubmitting, resetForm, navigate) => a
         data: {
           name: values.name,
           role: values.role,
-          isAdmin: auth.currentUser.email === 'serh.shym@gmail.com' ? true : false,
+          isAdmin: auth.currentUser.email === ownerMail ? true : false,
           email: values.email,
           id: auth.currentUser.uid,
         },

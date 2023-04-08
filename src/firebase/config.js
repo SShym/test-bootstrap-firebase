@@ -15,8 +15,9 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
+const ownerMail = 'serh.shym@gmail.com';
 
 const googleProvider = new GoogleAuthProvider();
 const facebookProvider = new FacebookAuthProvider();
 
-export { auth, googleProvider, facebookProvider, db };
+export { auth, googleProvider, facebookProvider, db, ownerMail };
