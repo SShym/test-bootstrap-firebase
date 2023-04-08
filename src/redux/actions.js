@@ -267,11 +267,12 @@ export const getUsers = () => async (dispatch) => {
 
 export const changeUserSettings = (values, user) => async (dispatch) => {
   const db = getFirestore();
-  console.log(user)
+
   const dataToUpdate = {
     name: values.name,
     role: values.role
   }
+  
   try {
     const userRef = doc(db, "users", user.id);
 
