@@ -205,18 +205,7 @@ export const register = (values, toast, setSubmitting, resetForm, navigate) => a
         }
       });
       
-      if(userExist){
-        dispatch({
-          type: AUTH,
-          data: {
-            name: values.name,
-            role: values.role,
-            isAdmin: auth.currentUser.email === 'serh.shym@gmail.com' ? true : false,
-            email: values.email,
-            id: auth.currentUser.uid,
-          },
-        });
-      } else {
+      if(!userExist) {
         setDoc(userDoc, {
           name: values.name,
           role: values.role,
@@ -225,6 +214,7 @@ export const register = (values, toast, setSubmitting, resetForm, navigate) => a
           id: auth.currentUser.uid,
         });
       }
+
       dispatch({
         type: AUTH,
         data: {
@@ -236,7 +226,6 @@ export const register = (values, toast, setSubmitting, resetForm, navigate) => a
         },
       });
 
-      toast.success('User registered successfully!');
       navigate('/');
     }).catch((error) => {
       if (error.code === 'auth/email-already-in-use') {
@@ -350,7 +339,6 @@ export const sendVerificationCode = (phoneNumber, setVerificationId, setErrorMes
         callback: () => {},
         onError: (error) => console.error('error', error)
       }, auth);
-      console.log(phoneNumber)
       const confirmationResult = await signInWithPhoneNumber(auth, phoneNumber, verifier);
 
       setVerificationId(confirmationResult.verificationId);
@@ -358,7 +346,6 @@ export const sendVerificationCode = (phoneNumber, setVerificationId, setErrorMes
       toast.success('SMS sent successfully');
     }
   } catch (error){
-    console.log('d', error)
     setErrorMessage(error.code)
   }
 }
