@@ -1,3 +1,7 @@
+Updating the entire array in state after adding a new element<br/> 
+is not the best practice, especially if the array contains many elements!!!<br/><br/><br/>
+
+
 <strong>Hi</strong>! I worked on the application for +- 12 hours.<br/> 
 I haven't used Firebase and Bootstrap for a long time, I often use MongoDB and MaterialUi.<br/>
 I made this application minimalistic, without any effects, animations, etc. because it wasn't required<br/>
