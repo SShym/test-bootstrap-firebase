@@ -1,4 +1,4 @@
-Updating the entire array in state after adding a new element<br/> 
+Updating the entire array in state after add/delete/delete a new element<br/> 
 is not the best practice, especially if the array contains many elements!!!<br/><br/><br/>
 
 
