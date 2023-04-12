@@ -1,6 +1,7 @@
-Updating the entire array in state after add/delete/delete a new element<br/> 
-is not the best practice, especially if the array contains many elements!!!<br/><br/><br/>
-
+Get all information(axios.get) after add/delete/delete a new element<br/> 
+is not the best practice, especially if the array contains many elements!!! If we are doing a real project<br/>
+we need to use different actions like ADD_PRODUCT, REMOVE PRODUCT, UPDATE PRODUCTS to change array of objects
+<br/><br/>
 
 <strong>Hi</strong>! I worked on the application for +- 12 hours.<br/> 
 I haven't used Firebase and Bootstrap for a long time, I often use MongoDB and MaterialUi.<br/>
