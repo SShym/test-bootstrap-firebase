@@ -4,7 +4,6 @@ If we are doing a real project, we need to use different actions like<br/>
 ADD_PRODUCT, REMOVE PRODUCT, UPDATE PRODUCTS to change array of objects
 <br/><br/>
 
-<strong>Hi</strong>! I worked on the application for +- 12 hours.<br/> 
 I haven't used Firebase and Bootstrap for a long time, I often use MongoDB and MaterialUi.<br/>
 I made this application minimalistic, without any effects, animations, etc. because it wasn't required<br/>
 You can also check my code writing structure on my Github in my previous test task.<br/>
